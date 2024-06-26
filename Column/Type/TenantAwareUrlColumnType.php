@@ -2,14 +2,14 @@
 
 namespace Enhavo\Bundle\MultiTenancyBundle\Column\Type;
 
-use Enhavo\Bundle\AppBundle\Column\Type\UrlType;
 use Enhavo\Bundle\MultiTenancyBundle\Model\TenantAwareInterface;
 use Enhavo\Bundle\MultiTenancyBundle\Tenant\TenantManager;
+use Enhavo\Bundle\ResourceBundle\Column\Type\UrlColumnType;
 use Enhavo\Bundle\RoutingBundle\Router\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
-class TenantAwareUrlType extends UrlType
+class TenantAwareUrlColumnType extends UrlColumnType
 {
     public function createResourceViewData(array $options, $resource)
     {
