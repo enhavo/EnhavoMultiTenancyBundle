@@ -1,27 +1,25 @@
 <?php
 
-namespace Enhavo\Bundle\MultiTenancyBundle\Controller;
+namespace Enhavo\Bundle\MultiTenancyBundle\Endpoint\Type;
 
+use Enhavo\Bundle\ApiBundle\Data\Data;
+use Enhavo\Bundle\ApiBundle\Endpoint\AbstractEndpointType;
+use Enhavo\Bundle\ApiBundle\Endpoint\Context;
 use Enhavo\Bundle\MultiTenancyBundle\Tenant\TenantManager;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-class MultiTenancyController extends AbstractController
+class SwitchTenantEndpointType extends AbstractEndpointType
 {
-    /** @var TenantManager */
-    protected $tenantManager;
-
-    /** @var string */
-    protected $sessionKey;
-
-    public function __construct(TenantManager $tenantManager, $sessionKey)
+    public function __construct(
+        private readonly TenantManager $tenantManager,
+        private readonly string $sessionKey,
+    )
     {
-        $this->tenantManager = $tenantManager;
-        $this->sessionKey = $sessionKey;
     }
 
-    public function switchTenantAction(Request $request)
+    public function handleRequest($options, Request $request, Data $data, Context $context)
     {
         $tenantKey = $request->get('tenant');
         $redirect = $request->get('redirect');
@@ -38,6 +36,7 @@ class MultiTenancyController extends AbstractController
 
         $request->getSession()->set($this->sessionKey, $tenant->getKey());
 
-        return $this->redirect($redirect);
+        $redirectResponse = new RedirectResponse($redirect);
+        $context->setResponse($redirectResponse);
     }
 }
